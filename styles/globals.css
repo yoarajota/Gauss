@@ -20,6 +20,14 @@ a {
   height: 70vh;
 }
 
+.width100{
+  width: 100%;
+}
+
+.flex{
+  display: flex;
+}
+
 .matriz-box {
   border: 1px solid rgb(238, 227, 227);
   border-top: none;

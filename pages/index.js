@@ -1,6 +1,7 @@
 import Head from "next/head";
 import Image from "next/image";
 import { useEffect, useReducer, useState } from "react";
+import Linha from "../public/comp/linha";
 import styles from "../styles/Home.module.css";
 
 export default function Home() {
@@ -13,12 +14,12 @@ export default function Home() {
 
   function reducer(state, action) {
     console.log(state, action);
-    if (action.type == "row") {
+    if (action.type == "column") {
       for (let i = 0; i < state.length; i++) {
         state[i].push(0);
       }
       return state;
-    } else if (action.type == "column") {
+    } else if (action.type == "row") {
       let x = state[0];
 
       for (let i = 0; i < x.length; i++) {
@@ -31,6 +32,10 @@ export default function Home() {
   }
 
   const [state, dispatch] = useReducer(reducer, initialState);
+
+  useEffect(() => {
+    console.log(state)
+  }, [state]);
 
   return (
     <div className={styles.container}>
@@ -52,7 +57,11 @@ export default function Home() {
       </button>
 
       <div className="body-calc">
-        <div className="matriz-box"></div>
+        <div className="matriz-box">
+          {state?.map((a) => {
+            return <Linha linha={a} />
+          })}
+        </div>
       </div>
     </div>
   );
