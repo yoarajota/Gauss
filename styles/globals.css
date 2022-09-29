@@ -24,6 +24,10 @@ a {
   width: 100%;
 }
 
+.px75{
+  width: 75px
+}
+
 .flex{
   display: flex;
 }
@@ -33,11 +37,19 @@ a {
   border-top: none;
   margin: 0 auto;
   height: 350px;
-  width: 350px;
+  width: 35%;
 }
 
 * {
   box-sizing: border-box;
+}
+
+.input-values{
+  background: transparent;
+  border: none;
+  text-align: center;
+  font-size: 15px;
+  width: 100%;
 }
 
 @media (prefers-color-scheme: dark) {

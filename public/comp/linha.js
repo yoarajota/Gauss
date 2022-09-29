@@ -1,9 +1,11 @@
+import Input from "./input";
+
 function Linha({linha}) {
     
     return (
         <div className="width100 flex">
             {linha && linha.map((x) => {
-               return <div className="width100">{x}</div>
+               return <div className="px75"><Input value={x}/></div>
             })}
         </div>
     );
