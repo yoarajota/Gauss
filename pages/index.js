@@ -7,9 +7,9 @@ import _ from "lodash";
 
 const stateType = {
   row: "row",
-  deleterow: "delete-row",
+  delrow: "delete-row",
   collumn: "collumn",
-  delcollumn: "del-collumn",
+  delcollumn: "delete-collumn",
 };
 
 export default function Home() {
@@ -23,7 +23,7 @@ export default function Home() {
   const [state, dispatch] = useReducer(reducer, initialState);
 
   function reducer(state, action) {
-    if (action.type === "column") {
+    if (action.type === "collumn") {
       let newState = _.clone(state);
 
       for (let i = 0; i < newState.length; i++) {
@@ -42,12 +42,12 @@ export default function Home() {
       newState.push(x);
 
       return newState;
-    } else if (action.type === "del-row") {
+    } else if (action.type === "delete-row") {
       let x = _.clone(state);
       x.pop();
 
       return x;
-    } else if (action.type === "del-column") {
+    } else if (action.type === "delete-collumn") {
       let newState = _.clone(state);
 
       for (let i = 0; i < newState.length; i++) {
@@ -55,8 +55,21 @@ export default function Home() {
       }
 
       return newState;
+    } else if (action.type === 'unique') {
+      let key1 = action.location.key1
+      let key2 = action.location.key2
+      let x = _.clone(state)
+
+      x[key1][key2] = action.value;
+
+      return x;
     }
   }
+
+
+  useEffect(() => {
+    console.log(state)
+  }, [state]);
 
   return (
     <div className={styles.container}>
@@ -93,8 +106,8 @@ export default function Home() {
 
       <div className="body-calc">
         <div className="matriz-box">
-          {state?.map((a) => {
-            return <Linha linha={a} />;
+          {state?.map((a, b) => {
+            return <Linha dispatch={dispatch} linha={a} key1={b} />;
           })}
         </div>
       </div>
