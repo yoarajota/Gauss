@@ -4,7 +4,7 @@ import { useEffect, useReducer, useState } from "react";
 import Linha from "../public/comp/linha";
 import styles from "../styles/Home.module.css";
 import _ from "lodash";
-import gausJacobi from "../public/functions/gaus";
+import gausJacobi, { gausSeidel } from "../public/functions/gaus";
 
 const stateType = {
   row: "row",
@@ -26,7 +26,8 @@ export default function Home() {
   };
 
   const [state, dispatch] = useReducer(reducer, initialState);
-  const [log, setLog] = useState('');
+  const [log, setLog] = useState("");
+  const [gauss, setGauss] = useState("Gauss Jacobi");
 
   function reducer(state, action) {
     if (action.type === "collumn") {
@@ -46,7 +47,7 @@ export default function Home() {
 
       let newState = _.clone(state);
       newState.a.push(x);
-      newState.b.push(0)
+      newState.b.push(0);
 
       return newState;
     } else if (action.type === "delete-row") {
@@ -63,35 +64,41 @@ export default function Home() {
       }
 
       return newState;
-    } else if (action.type === 'unique') {
-      let key1 = action.location.key1
-      let key2 = action.location.key2
-      let x = _.clone(state)
+    } else if (action.type === "unique") {
+      let key1 = action.location.key1;
+      let key2 = action.location.key2;
+      let x = _.clone(state);
 
       x.a[key1][key2] = action.value;
 
       return x;
-    } else if (action.type === 'unique-b') {
-      let key1 = action.location.key1
-      let x = _.clone(state)
+    } else if (action.type === "unique-b") {
+      let key1 = action.location.key1;
+      let x = _.clone(state);
 
       x.b[key1] = action.value;
 
       return x;
-    } else if (action.type === 'unique-c') {
-      let x = _.clone(state)
-      x.c = action.value
+    } else if (action.type === "unique-c") {
+      let x = _.clone(state);
+      x.c = action.value;
       return x;
-    } else if (action.type === 'unique-d') {
-      let x = _.clone(state)
-      x.d = action.value
+    } else if (action.type === "unique-d") {
+      let x = _.clone(state);
+      x.d = action.value;
       return x;
     }
   }
 
   return (
     <div className={styles.container}>
-      <h1>Gaus Jacobi</h1>
+      <h1
+        onClick={() => {
+          setGauss(gauss === "Gauss Jacobi" ? "Gauss Seidel" : "Gauss Jacobi");
+        }}
+      >
+        {gauss && gauss}
+      </h1>
 
       <button
         onClick={() => {
@@ -100,25 +107,13 @@ export default function Home() {
       >
         add row
       </button>
-      <button
-        onClick={() =>
-          dispatch({ type: stateType.collumn })
-        }
-      >
+      <button onClick={() => dispatch({ type: stateType.collumn })}>
         add collumn
       </button>
-      <button
-        onClick={() =>
-          dispatch({ type: stateType.delrow })
-        }
-      >
+      <button onClick={() => dispatch({ type: stateType.delrow })}>
         delete row
       </button>
-      <button
-        onClick={() =>
-          dispatch({ type: stateType.delcollumn })
-        }
-      >
+      <button onClick={() => dispatch({ type: stateType.delcollumn })}>
         delete collumn
       </button>
 
@@ -131,52 +126,74 @@ export default function Home() {
           </div>
           <div>
             {state?.b.map((c, d) => {
-              return <Linha type={'vetor-b'} dispatch={dispatch} key={d} linha={c} key1={d} />;
+              return (
+                <Linha
+                  type={"vetor-b"}
+                  dispatch={dispatch}
+                  key={d}
+                  linha={c}
+                  key1={d}
+                />
+              );
             })}
           </div>
         </div>
         <div className="flex center doublebutton">
           <label>maximum iter</label>
           <input
-            type='number'
+            type="number"
             className="input-values wid-20"
             value={state.c}
             onChange={(e) =>
               dispatch({
-                type: 'unique-c',
+                type: "unique-c",
                 value: e.target.value,
               })
             }
           />
-          <label>precision</label>
+          <label>{gauss === "Gauss Jacobi" ? "precision" : "solution"}</label>
           <input
-            type='number'
-            className="input-values wid-20"
+            type={gauss === "Gauss Jacobi" ? "number" : "text"}
+            style={{ width: gauss === "Gauss Jacobi" ? "50px" : "100px" }}
+            className="input-values"
             value={state.d}
             onChange={(e) =>
               dispatch({
-                type: 'unique-d',
+                type: "unique-d",
                 value: e.target.value,
               })
             }
           />
         </div>
-        <button className="resolve-button" onClick={() => setLog(gausJacobi(state))}>
+        <button
+          className="resolve-button"
+          onClick={() =>
+            setLog(
+              gauss === "Gauss Jacobi" ? gausJacobi(state) : gausSeidel(state)
+            )
+          }
+        >
           Resolve
         </button>
         <div>
           {log?.LOG?.map((x) => {
             let string = undefined;
-            if (typeof x == 'object') {
-              string = x.join(" | ")
+            if (typeof x == "object") {
+              string = x.join(" | ");
             }
-            return <p className="log"> {string ?? x} </p>
+            return <p className="log"> {string ?? x} </p>;
           })}
         </div>
-        <h4>
-          {log?.x?.join(" | ")}
-        </h4>
-        {log && <button onClick={(() => { setLog() })}>Clean Log</button>}
+        <h4>{log?.x?.join(" | ")}</h4>
+        {log && (
+          <button
+            onClick={() => {
+              setLog();
+            }}
+          >
+            Clean Log
+          </button>
+        )}
       </div>
     </div>
   );
