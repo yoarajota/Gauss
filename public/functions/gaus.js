@@ -72,24 +72,36 @@ export default function gausJacobi(STATE) {
 }
 
 export function gausSeidel(STATE) {
+  var LOG = []
   var solution = STATE.d.split(", ");
+  console.log(solution, parseFloat(STATE.c));
 
   let i = 0;
   while (i < parseFloat(STATE.c)) {
-    for (let c = 0; 0 < STATE.a.length; c++) {
-      var x = parseFloat(STATE.b[i]);
-      for (let cc = 0; 0 < STATE.a.length; cc++) {
+    
+    for (let c = 0; c < STATE.a.length; c++) {
+      
+      var x = parseFloat(STATE.b[c]);
+      
+      for (let cc = 0; cc < STATE.a.length; cc++) {
+        
         if (c != cc) {
+          
           x -= parseFloat(STATE.a[c][cc]) * parseFloat(solution[cc]);
+          
         }
+        
       }
+      
       x /= parseFloat(STATE.a[c][c]);
+      
       solution[c] = x;
     }
+    LOG.push(`Iteration ${i}`);
+    LOG.push(_.clone(solution));
     i++;
   }
 
   var x = solution;
-  var LOG = [];
   return { x, LOG };
 }
